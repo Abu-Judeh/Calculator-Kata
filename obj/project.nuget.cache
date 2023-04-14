@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "6uI6bbzGRYdKp5O6ostyCYCZq97KuhZZr+eYulmIkEdbWoXCPpoD9SZJZp7PjxXdIRZn2gkgqmEcymxMgZYPUg==",
+  "success": true,
+  "projectFilePath": "/home/mrrobot/RiderProjects/Calculator Kata/Calculator Kata/Calculator Kata.csproj",
+  "expectedPackageFiles": [
+    "/home/mrrobot/.nuget/packages/microsoft.aspnetcore.app.ref/7.0.3/microsoft.aspnetcore.app.ref.7.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
