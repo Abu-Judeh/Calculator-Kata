@@ -13,18 +13,26 @@ public class Product
         Price = price;
     }
 
-    public decimal GetPriceWithTax(decimal taxPercentage)
+    public decimal GetPriceWithTaxAndDiscounts(decimal taxPercentage, List<Discount> discounts)
     {
-        return Math.Round(Price * (1 + taxPercentage / 100), 2);
-    }
+        decimal currentPrice = Price;
 
-    public decimal GetPriceWithTaxAndDiscounts(decimal taxPercentage, decimal discountPercentage, decimal upcDiscountPercentage, int upcForDiscount)
-    {
-        decimal priceWithTax = GetPriceWithTax(taxPercentage);
-        decimal universalDiscountAmount = Math.Round(Price * (discountPercentage / 100), 2);
-        decimal upcDiscountAmount = UPC == upcForDiscount ? Math.Round(Price * (upcDiscountPercentage / 100), 2) : 0;
-        return Math.Round(priceWithTax - universalDiscountAmount - upcDiscountAmount, 2);
-    }
+        // Apply before tax discounts
+        foreach (BeforeTaxDiscount discount in discounts.OfType<BeforeTaxDiscount>())
+        {
+            currentPrice = discount.Apply(currentPrice, taxPercentage);
+        }
 
-    
+        // Apply tax
+        decimal taxAmount = Math.Round(currentPrice * (taxPercentage / 100), 2);
+        currentPrice += taxAmount;
+
+        // Apply after tax discounts
+        foreach (AfterTaxDiscount discount in discounts.OfType<AfterTaxDiscount>())
+        {
+            currentPrice = discount.Apply(currentPrice, taxPercentage);
+        }
+
+        return Math.Round(currentPrice, 2);
+    }
 }

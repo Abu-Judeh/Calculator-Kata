@@ -7,12 +7,16 @@ Console.WriteLine($"UPC: {book.UPC}");
 Console.WriteLine($"Price before tax and discounts: ${book.Price}");
 
 decimal taxPercentage = 20;
-decimal universalDiscountPercentage = 15;
-decimal upcDiscountPercentage = 7;
-int upcForDiscount = 12345;
+List<Discount> discounts = new List<Discount>
+{
+    new BeforeTaxDiscount(7),
+    new AfterTaxDiscount(15)
+};
 
-decimal finalPrice = book.GetPriceWithTaxAndDiscounts(taxPercentage, universalDiscountPercentage, upcDiscountPercentage, upcForDiscount);
-Console.WriteLine($"Price after {taxPercentage}% tax, {universalDiscountPercentage}% universal discount, and {upcDiscountPercentage}% UPC discount: ${finalPrice}");
+decimal finalPrice = book.GetPriceWithTaxAndDiscounts(taxPercentage, discounts);
+Console.WriteLine($"Price after {taxPercentage}% tax and discounts: ${finalPrice}");
 
-decimal totalDiscountAmount = Math.Round(book.Price * (universalDiscountPercentage / 100), 2) + (book.UPC == upcForDiscount ? Math.Round(book.Price * (upcDiscountPercentage / 100), 2) : 0);
+decimal upcDiscountAmount = Math.Round(book.Price * 7 / 100, 2);
+decimal universalDiscountAmount = Math.Round((book.Price - upcDiscountAmount) * 15 / 100, 2);
+decimal totalDiscountAmount = upcDiscountAmount + universalDiscountAmount;
 Console.WriteLine($"Total discount amount: ${totalDiscountAmount}");
