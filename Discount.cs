@@ -2,12 +2,6 @@ namespace Calculator_Kata;
 
 public abstract class Discount
 {
-    public decimal Percentage { get; set; }
+    public abstract decimal GetDiscountAmount(decimal originalPrice);
 
-    public Discount(decimal percentage)
-    {
-        Percentage = percentage;
-    }
-
-    public abstract decimal Apply(decimal price, decimal taxPercentage);
 }

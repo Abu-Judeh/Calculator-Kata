@@ -5,40 +5,46 @@ public class Product
     public string Name { get; set; }
     public int UPC { get; set; }
     public decimal Price { get; set; }
+    public List<Cost> AdditionalCosts { get; set; }
 
     public Product(string name, int upc, decimal price)
     {
         Name = name;
         UPC = upc;
         Price = price;
+        AdditionalCosts = new List<Cost>();
     }
-    public List<Cost> AdditionalCosts { get; set; } = new List<Cost>();
-    
-    public decimal GetPriceWithTaxDiscountsAndCosts(decimal taxPercentage, List<Discount> discounts)
+
+    public void AddCost(Cost cost)
     {
-        decimal currentPrice = Price;
+        AdditionalCosts.Add(cost);
+    }
 
-        // Apply before tax discounts
-        foreach (BeforeTaxDiscount discount in discounts.OfType<BeforeTaxDiscount>())
-        {
-            currentPrice = discount.Apply(currentPrice, taxPercentage);
-        }
-
-        // Apply tax
-        decimal taxAmount = Math.Round(currentPrice * (taxPercentage / 100), 2);
-        currentPrice += taxAmount;
-
-        // Apply after tax discounts
-        foreach (AfterTaxDiscount discount in discounts.OfType<AfterTaxDiscount>())
-        {
-            currentPrice = discount.Apply(currentPrice, taxPercentage);
-        }
-        // Add additional costs
+    public decimal GetTotalCost()
+    {
+        decimal totalCost = Price;
         foreach (Cost cost in AdditionalCosts)
         {
-            currentPrice += cost.GetCost(Price);
+            totalCost += cost.GetCost(Price);
         }
+        return Math.Round(totalCost,2);
+    }
 
-        return Math.Round(currentPrice, 2);
+    public decimal GetTotalDiscountAmount(List<Discount> discounts, DiscountCombinationMethod method)
+    {
+        if (method == DiscountCombinationMethod.Additive)
+        {
+            return discounts.Sum(discount => discount.GetDiscountAmount(Price));
+        }
+        else // Multiplicative
+        {
+            decimal discountedPrice = Price;
+            foreach (Discount discount in discounts)
+            {
+                decimal discountAmount = discount.GetDiscountAmount(discountedPrice);
+                discountedPrice -= discountAmount;
+            }
+            return Price - discountedPrice;
+        }
     }
 }
