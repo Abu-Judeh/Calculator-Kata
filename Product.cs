@@ -18,11 +18,12 @@ public class Product
         return Math.Round(Price * (1 + taxPercentage / 100), 2);
     }
 
-    public decimal GetPriceWithTaxAndDiscount(decimal taxPercentage, decimal discountPercentage)
+    public decimal GetPriceWithTaxAndDiscounts(decimal taxPercentage, decimal discountPercentage, decimal upcDiscountPercentage, int upcForDiscount)
     {
         decimal priceWithTax = GetPriceWithTax(taxPercentage);
-        decimal discountAmount = Math.Round(Price * (discountPercentage / 100), 2);
-        return Math.Round(priceWithTax - discountAmount, 2);
+        decimal universalDiscountAmount = Math.Round(Price * (discountPercentage / 100), 2);
+        decimal upcDiscountAmount = UPC == upcForDiscount ? Math.Round(Price * (upcDiscountPercentage / 100), 2) : 0;
+        return Math.Round(priceWithTax - universalDiscountAmount - upcDiscountAmount, 2);
     }
 
     
