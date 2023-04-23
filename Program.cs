@@ -1,35 +1,42 @@
 ﻿using Calculator_Kata;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
+// Create sample products
 Product book1 = new Product("The Little Prince", 12345, 20.25m);
-book1.AdditionalCosts.Add(new Cost("Packaging", 1, true));
-book1.AdditionalCosts.Add(new Cost("Transport", 2.2m, false));
+Product book2 = new Product("The Alchemist", 67890, 15.99m);
 
-Product book2 = new Product("The Little Prince", 789, 20.25m);
+// Add additional costs
+book1.AddCost(new Cost("Packaging", 1.00m, true));
+book1.AddCost(new Cost("Transport", 2.2m, false));
 
-List<Product> books = new List<Product> { book1, book2 };
+book2.AddCost(new Cost("Packaging", 1.00m, true));
+book2.AddCost(new Cost("Transport", 2.2m, false));
 
-decimal taxPercentage = 21;
+// Define tax, discounts and discount combination method
+decimal taxPercentage = 21m;
 List<Discount> discounts = new List<Discount>
 {
-    new BeforeTaxDiscount(7),
-    new AfterTaxDiscount(15)
+    new UniversalDiscount(15m),
+    new UpcDiscount(12345, 7m)
 };
 
-foreach (Product book in books)
+DiscountCombinationMethod discountCombinationMethod = DiscountCombinationMethod.Multiplicative;
+
+// Calculate and display results
+List<Product> products = new List<Product> { book1, book2 };
+
+foreach (Product book in products)
 {
-    Console.WriteLine($"Product: {book.Name}");
-    Console.WriteLine($"UPC: {book.UPC}");
-    Console.WriteLine($"Price before tax, discounts, and additional costs: ${book.Price}");
+    Console.WriteLine($"Product: {book.Name}, UPC: {book.UPC}");
+    Console.WriteLine($"Price: ${book.Price}");
 
-    decimal finalPrice = book.GetPriceWithTaxDiscountsAndCosts(taxPercentage, discounts);
-    Console.WriteLine($"Price after {taxPercentage}% tax, discounts, and additional costs: ${finalPrice}");
+    decimal totalDiscountAmount = book.GetTotalDiscountAmount(discounts, discountCombinationMethod);
+    decimal totalPriceWithTax = book.Price + (book.Price * (taxPercentage / 100));
+    decimal finalPrice = totalPriceWithTax - totalDiscountAmount;
 
-    decimal upcDiscountAmount = Math.Round(book.Price * 7 / 100, 2);
-    decimal universalDiscountAmount = Math.Round((book.Price - upcDiscountAmount) * 15 / 100, 2);
-    decimal totalDiscountAmount = upcDiscountAmount + universalDiscountAmount;
+    foreach (Cost cost in book.AdditionalCosts)
+    {
+        finalPrice += cost.GetCost(book.Price);
+    }
 
     Console.WriteLine($"Cost: ${book.Price}");
     Console.WriteLine($"Tax: ${Math.Round(book.Price * (taxPercentage / 100), 2)}");
@@ -40,8 +47,6 @@ foreach (Product book in books)
         Console.WriteLine($"{cost.Description}: ${cost.GetCost(book.Price)}");
     }
 
-    Console.WriteLine($"TOTAL: ${finalPrice}");
+    Console.WriteLine($"TOTAL: ${   Math.Round(finalPrice,2)}");
     Console.WriteLine();
 }
-
-Console.ReadLine();
