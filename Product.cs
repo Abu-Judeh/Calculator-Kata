@@ -12,8 +12,9 @@ public class Product
         UPC = upc;
         Price = price;
     }
-
-    public decimal GetPriceWithTaxAndDiscounts(decimal taxPercentage, List<Discount> discounts)
+    public List<Cost> AdditionalCosts { get; set; } = new List<Cost>();
+    
+    public decimal GetPriceWithTaxDiscountsAndCosts(decimal taxPercentage, List<Discount> discounts)
     {
         decimal currentPrice = Price;
 
@@ -31,6 +32,11 @@ public class Product
         foreach (AfterTaxDiscount discount in discounts.OfType<AfterTaxDiscount>())
         {
             currentPrice = discount.Apply(currentPrice, taxPercentage);
+        }
+        // Add additional costs
+        foreach (Cost cost in AdditionalCosts)
+        {
+            currentPrice += cost.GetCost(Price);
         }
 
         return Math.Round(currentPrice, 2);
