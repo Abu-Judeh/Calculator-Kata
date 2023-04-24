@@ -1,7 +1,7 @@
 ﻿using Calculator_Kata;
 
-Product book1 = new Product("The Little Prince", 12345, 20.25m,20m,true);
-Product book2 = new Product("The Alchemist", 67890, 15.99m,4m,false);
+Product book1 = new Product("The Little Prince", 12345, 20.25m,"USD",20m,true);
+Product book2 = new Product("The Alchemist", 67890, 15.99m,"USD",4m,false);
 
 // Add additional costs
 //book1.AddCost(new Cost("Packaging", 1m,true));
@@ -26,7 +26,7 @@ List<Product> products = new List<Product> { book1, book2 };
 foreach (Product book in products)
 {
     Console.WriteLine($"Product: {book.Name}, UPC: {book.UPC}");
-    Console.WriteLine($"Price: ${book.Price}");
+    Console.WriteLine($"Price: ${book.Price} ${book.Currency}" );
 
     decimal totalDiscountAmount = book.GetTotalDiscountAmount(discounts, discountCombinationMethod);
     decimal totalPriceWithTax = book.Price + (book.Price * (taxPercentage / 100));
@@ -37,15 +37,15 @@ foreach (Product book in products)
         finalPrice += cost.GetCost(book.Price);
     }
 
-    Console.WriteLine($"Cost: ${book.Price}");
-    Console.WriteLine($"Tax: ${Math.Round(book.Price * (taxPercentage / 100), 2)}");
-    Console.WriteLine($"Discounts: ${totalDiscountAmount}");
+    Console.WriteLine($"Cost: ${book.Price} ${book.Currency}");
+    Console.WriteLine($"Tax: ${Math.Round(book.Price * (taxPercentage / 100), 2)} ${book.Currency}");
+    Console.WriteLine($"Discounts: ${totalDiscountAmount} ${book.Currency}");
 
     foreach (Cost cost in book.AdditionalCosts)
     {
-        Console.WriteLine($"{cost.Description}: ${cost.GetCost(book.Price)}");
+        Console.WriteLine($"{cost.Description}: ${cost.GetCost(book.Price)} ${book.Currency}");
     }
 
-    Console.WriteLine($"TOTAL: ${Math.Round(finalPrice, 2)}");
+    Console.WriteLine($"TOTAL: ${Math.Round(finalPrice, 2)} ${book.Currency}");
     Console.WriteLine();
 }
