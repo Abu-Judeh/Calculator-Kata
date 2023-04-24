@@ -15,6 +15,6 @@ public class Cost
 
     public decimal GetCost(decimal price)
     {
-        return IsPercentage ? Math.Round(price * (Amount / 100), 2) : Amount;
+        return IsPercentage ? Math.Round(price * (Amount / 100), 4) : Amount;
     }
 }
