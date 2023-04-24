@@ -1,15 +1,14 @@
 ﻿using Calculator_Kata;
 
-// Create sample products
-Product book1 = new Product("The Little Prince", 12345, 20.25m);
-Product book2 = new Product("The Alchemist", 67890, 15.99m);
+Product book1 = new Product("The Little Prince", 12345, 20.25m,20m,true);
+Product book2 = new Product("The Alchemist", 67890, 15.99m,4m,false);
 
 // Add additional costs
-book1.AddCost(new Cost("Packaging", 1.00m, true));
-book1.AddCost(new Cost("Transport", 2.2m, false));
+//book1.AddCost(new Cost("Packaging", 1m,true));
+//book1.AddCost(new Cost("Transport", 2.2m,false));
 
-book2.AddCost(new Cost("Packaging", 1.00m, true));
-book2.AddCost(new Cost("Transport", 2.2m, false));
+//book2.AddCost(new Cost("Packaging", 1m,true));
+//book2.AddCost(new Cost("Transport", 2.2m,false));
 
 // Define tax, discounts and discount combination method
 decimal taxPercentage = 21m;
@@ -47,6 +46,6 @@ foreach (Product book in products)
         Console.WriteLine($"{cost.Description}: ${cost.GetCost(book.Price)}");
     }
 
-    Console.WriteLine($"TOTAL: ${   Math.Round(finalPrice,2)}");
+    Console.WriteLine($"TOTAL: ${Math.Round(finalPrice, 2)}");
     Console.WriteLine();
 }
