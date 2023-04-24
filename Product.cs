@@ -35,7 +35,7 @@ public class Product
         {
             totalCost += cost.GetCost(Price);
         }
-        return Math.Round(totalCost,2);
+        return Math.Round(totalCost,4);
     }
 
     public decimal GetTotalDiscountAmount(List<Discount> discounts, DiscountCombinationMethod method)

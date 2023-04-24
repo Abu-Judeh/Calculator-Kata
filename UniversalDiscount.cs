@@ -11,6 +11,6 @@ public class UniversalDiscount:Discount
 
     public override decimal GetDiscountAmount(decimal originalPrice)
     {
-        return Math.Round(originalPrice * (Percentage / 100),2);
+        return Math.Round(originalPrice * (Percentage / 100),4);
     }
 }
