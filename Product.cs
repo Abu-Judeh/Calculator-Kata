@@ -5,13 +5,19 @@ public class Product
     public string Name { get; set; }
     public int UPC { get; set; }
     public decimal Price { get; set; }
+
+    public decimal Cap { get; set; }
+    
+    public bool IsPercentageCap { get; set; }
     public List<Cost> AdditionalCosts { get; set; }
 
-    public Product(string name, int upc, decimal price)
+    public Product(string name, int upc, decimal price,decimal cap,bool isPercentageCap)
     {
         Name = name;
         UPC = upc;
         Price = price;
+        Cap = cap;
+        IsPercentageCap = isPercentageCap;
         AdditionalCosts = new List<Cost>();
     }
 
@@ -32,19 +38,23 @@ public class Product
 
     public decimal GetTotalDiscountAmount(List<Discount> discounts, DiscountCombinationMethod method)
     {
+        decimal final;
         if (method == DiscountCombinationMethod.Additive)
         {
-            return discounts.Sum(discount => discount.GetDiscountAmount(Price));
+             final= discounts.Sum(discount => discount.GetDiscountAmount(Price));
         }
         else // Multiplicative
         {
             decimal discountedPrice = Price;
             foreach (Discount discount in discounts)
             {
-                decimal discountAmount = discount.GetDiscountAmount(discountedPrice);
+                decimal discountAmount = discount.GetDiscountAmount(Price);
                 discountedPrice -= discountAmount;
             }
-            return Price - discountedPrice;
+            final =Price - discountedPrice;
         }
+
+        Discount temp = new UniversalDiscount(Price);
+        return final = temp.GetCapDiscount(Price, final, Cap, IsPercentageCap);
     }
 }
